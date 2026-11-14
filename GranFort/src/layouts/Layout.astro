@@ -1,0 +1,143 @@
+---
+// Шрифты подключены локально (пакеты @fontsource) — без запросов к Google Fonts
+import '@fontsource-variable/inter';
+import '@fontsource/unbounded/700.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'ГРАНФОРТ — защита бамперов для китайских внедорожников',
+	description = 'Силовая защита бамперов для JAC T9 и Haval H3 из нержавеющей стали AISI 304 и чёрного металла. Установка без сверления, изготовление под заказ, доставка по России.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#0D1613" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--bg: #0d1613;
+		--surf: #14201b;
+		--surf2: #1c2b25;
+		--acc: #f2c230;
+		--acc-hover: #f7d35e;
+		--on-acc: #1c1703;
+		--steel: #a9b8b0;
+		--tx: #eef2ee;
+		--tx2: #93a59c;
+		--line: #26372f;
+		--error: #ff8a7a;
+
+		--font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+		--font-head: 'Unbounded', 'Inter Variable', system-ui, sans-serif;
+
+		/* ширина контента 1200, поля минимум --gutter */
+		--content: 1200px;
+		--gutter: 120px;
+		--px: max(var(--gutter), calc((100% - var(--content)) / 2));
+		--section-py: 112px;
+		--header-h: 88px;
+	}
+
+	@media (max-width: 1280px) {
+		:root { --gutter: 64px; --section-py: 88px; }
+	}
+	@media (max-width: 1024px) {
+		:root { --gutter: 40px; --section-py: 72px; --header-h: 72px; }
+	}
+	@media (max-width: 768px) {
+		:root { --gutter: 20px; --section-py: 56px; --header-h: 64px; }
+	}
+	@media (max-width: 480px) {
+		:root { --gutter: 16px; }
+	}
+
+	*,
+	*::before,
+	*::after {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+		scroll-padding-top: var(--header-h);
+		-webkit-text-size-adjust: 100%;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		html { scroll-behavior: auto; }
+		*, *::before, *::after { transition: none !important; animation: none !important; }
+	}
+
+	body {
+		background-color: var(--bg);
+		color: var(--tx2);
+		font-family: var(--font-body);
+		line-height: 1.5;
+		overflow-x: hidden;
+	}
+
+	body.menu-open {
+		overflow: hidden;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	button,
+	input,
+	textarea {
+		font: inherit;
+		color: inherit;
+	}
+
+	button {
+		cursor: pointer;
+		border: none;
+		background: none;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--acc);
+		outline-offset: 3px;
+	}
+
+	.visually-hidden {
+		position: absolute !important;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+</style>

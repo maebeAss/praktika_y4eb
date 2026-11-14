@@ -1,0 +1,1359 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import LogoImg from '../assets/images/logo.png';
+import LineImg from '../assets/images/line.png';
+import IconImg from '../assets/images/icon.png';
+import HeroImg from '../assets/images/photos/car-jac-t9-side.jpg';
+import CompaniImg from '../assets/images/photos/car-jac-t9-front.jpg';
+import FrontBarImg from '../assets/images/photos/front-bar.jpg';
+import CornerUImg from '../assets/images/photos/corner-u.jpg';
+import KitLipImg from '../assets/images/photos/kit-lip.jpg';
+import CornerSideImg from '../assets/images/photos/corner-side.jpg';
+import KitFlatImg from '../assets/images/photos/kit-flat.jpg';
+import KitAngle1Img from '../assets/images/photos/kit-angle-1.jpg';
+import KitAngle2Img from '../assets/images/photos/kit-angle-2.jpg';
+import KitAngle3Img from '../assets/images/photos/kit-angle-3.jpg';
+import FrontBarEndImg from '../assets/images/photos/front-bar-end.jpg';
+import BracketStudsImg from '../assets/images/photos/bracket-studs.jpg';
+import BracketLImg from '../assets/images/photos/bracket-l.jpg';
+import BracketsPairImg from '../assets/images/photos/brackets-pair.jpg';
+import ArrowImg from '../assets/images/arrow.png';
+import Arrow2Img from '../assets/images/arrow-2.png';
+
+// Адрес, на который форма отправляет заявку. Задаётся в .env (см. .env.example)
+const LEAD_ENDPOINT = import.meta.env.PUBLIC_LEAD_ENDPOINT || '/api/lead';
+
+const PHONE = '+7 (900) 000-00-00';
+const PHONE_HREF = 'tel:+79000000000';
+const EMAIL = 'info@granfort.ru';
+const ADDRESS = 'г. Город, ул. Улица, д. 0';
+
+const nav = [
+    { href: '#compani', label: 'О компании' },
+    { href: '#product', label: 'Продукция' },
+    { href: '#prime', label: 'Преимущества' },
+    { href: '#info', label: 'Под заказ' },
+    { href: '#contact', label: 'Контакты' },
+];
+
+const stats = [
+    { value: 'AISI 304', text: 'нержавеющая сталь с зеркальной полировкой' },
+    { value: '0 отверстий', text: 'установка без сверления кузова' },
+    { value: '2 модели', text: 'готовые комплекты: JAC T9 и Haval H3' },
+    { value: 'Вся Россия', text: 'доставка в любой регион' },
+];
+
+// На фото — чёрный металл; по ТЗ каждый комплект делается из одного из двух материалов
+const MATERIAL = 'Чёрный металл с порошковым покрытием или нержавейка AISI 304';
+
+const products = [
+    { img: FrontBarImg, model: 'JAC T9', title: 'Передняя защита бампера', material: MATERIAL },
+    { img: CornerUImg, model: 'JAC T9', title: 'Задняя защита бампера', material: MATERIAL },
+    { img: KitLipImg, model: 'HAVAL H3', title: 'Передняя защита бампера', material: MATERIAL },
+    { img: CornerSideImg, model: 'HAVAL H3', title: 'Задняя защита бампера', material: MATERIAL },
+];
+
+// Галерея: превью + полноразмерная картинка для просмотра
+const gallery = await Promise.all(
+    [
+        { img: KitFlatImg, alt: 'Комплект защиты бампера: передняя дуга, боковые элементы и кронштейны' },
+        { img: KitAngle1Img, alt: 'Комплект защиты бампера в разобранном виде' },
+        { img: KitAngle2Img, alt: 'Передняя дуга и боковые элементы с кронштейнами' },
+        { img: KitAngle3Img, alt: 'Элементы защиты бампера с порошковым покрытием' },
+        { img: FrontBarEndImg, alt: 'Передняя дуга защиты бампера, вид сбоку' },
+        { img: BracketStudsImg, alt: 'Кронштейн крепления со шпильками' },
+        { img: BracketLImg, alt: 'Г-образный кронштейн крепления' },
+        { img: BracketsPairImg, alt: 'Пара кронштейнов для крепления на штатные точки' },
+    ].map(async (g) => ({ ...g, full: (await getImage({ src: g.img, width: 1280, format: 'webp' })).src })),
+);
+
+const advantages = [
+    ['Качественные материалы', 'Нержавеющая сталь AISI 304 и внимание к деталям на каждом этапе производства.'],
+    ['Установка без сверления', 'Крепление на штатные точки — не нужно сверлить или дорабатывать кузов.'],
+    ['Комплект или под ключ', 'Купите комплект для самостоятельной установки или закажите монтаж у нас.'],
+    ['Индивидуальная разработка', 'Спроектируем и изготовим защиту под вашу модель автомобиля.'],
+    ['Доставка по всей России', 'Отправляем продукцию в любой регион транспортными компаниями.'],
+    ['Китайский автопром', 'Специализируемся на китайских внедорожниках и пикапах.'],
+];
+
+const steps = [
+    ['Заявка', 'Присылаете марку, модель и год выпуска автомобиля.'],
+    ['Замеры и проект', 'Согласовываем внешний вид, материал и крепление.'],
+    ['Производство', 'Изготавливаем защиту из нержавейки или чёрного металла.'],
+    ['Установка', 'Ставим под ключ или отправляем комплект в ваш город.'],
+];
+
+const contacts = [
+    { label: 'Телефон', value: PHONE, href: PHONE_HREF },
+    { label: 'Почта', value: EMAIL, href: `mailto:${EMAIL}` },
+    { label: 'Адрес', value: ADDRESS },
+];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Layout>
+    <header class="header" data-header>
+        <a class="logo" href="#hero" aria-label="ГРАНФОРТ — на главную">
+            <Image src={LogoImg} alt="ГРАНФОРТ" loading="eager" />
+        </a>
+
+        <nav class="nav" id="site-nav" aria-label="Основное меню">
+            {nav.map((item) => <a class="a_nav" href={item.href}>{item.label}</a>)}
+            <div class="nav_mobile_extra">
+                <a class="p_header" href={PHONE_HREF}>{PHONE}</a>
+                <a class="btn btn_wide" href="#contact">Оставить заявку</a>
+            </div>
+        </nav>
+
+        <div class="div_header">
+            <a class="p_header" href={PHONE_HREF}>{PHONE}</a>
+            <a class="btn btn_s btn_header" href="#contact">Оставить заявку</a>
+        </div>
+
+        <button class="burger" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Открыть меню" data-burger>
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="hero_one">
+                <div class="hero_one_text">
+                    <div class="title">
+                        <Image src={LineImg} alt="" />
+                        <p class="p_title">Тюнинг китайских внедорожников</p>
+                    </div>
+
+                    <h1>Защита бамперов из нержавеющей стали</h1>
+
+                    <p class="hero_lead">Комплекты для JAC T9 и Haval H3 из стали AISI 304 с зеркальной полировкой и чёрного металла с порошковым покрытием. Ставятся без сверления кузова.</p>
+
+                    <div class="hero_button">
+                        <a class="btn" href="#product">Выбрать комплект <Image src={ArrowImg} alt="" /></a>
+                        <a class="btn btn_outline" href="#contact">Заказать под мой авто</a>
+                    </div>
+                </div>
+
+                <Image
+                    class="img_hero"
+                    src={HeroImg}
+                    alt="Пикап JAC T9 с установленной защитой переднего бампера"
+                    widths={[360, 560, 1120]}
+                    sizes="(max-width: 1024px) 100vw, 560px"
+                    loading="eager"
+                    fetchpriority="high"
+                />
+            </div>
+
+            <ul class="hero_two">
+                {stats.map((s) => (
+                    <li class="hero_two_text">
+                        <p class="hero_h2">{s.value}</p>
+                        <p class="hero_p">{s.text}</p>
+                    </li>
+                ))}
+            </ul>
+        </section>
+
+        <section class="compani" id="compani">
+            <div class="div_compani">
+                <div class="title">
+                    <Image src={LineImg} alt="" />
+                    <p class="p_title">О компании</p>
+                </div>
+
+                <h2>Тюнинг для китайских внедорожников и пикапов</h2>
+
+                <p class="p_compani">ГРАНФОРТ производит силовую защиту передних и задних бамперов: из нержавеющей стали AISI 304 с зеркальной полировкой и из чёрного металла с порошковым покрытием.</p>
+
+                <p class="p_compani">Готовых решений для китайских автомобилей пока немного — мы развиваем это направление и расширяем ассортимент.</p>
+            </div>
+
+            <Image
+                class="img_compani"
+                src={CompaniImg}
+                alt="JAC T9 с защитой бампера из чёрного металла, вид спереди"
+                widths={[360, 560, 1120]}
+                sizes="(max-width: 1024px) 100vw, 560px"
+            />
+        </section>
+
+        <section class="product" id="product">
+            <div class="product_one">
+                <div class="title">
+                    <Image src={LineImg} alt="" />
+                    <p class="p_title">Продукция</p>
+                </div>
+
+                <h2>Готовые комплекты защиты</h2>
+            </div>
+
+            <ul class="product_two">
+                {products.map((p) => (
+                    <li class="product_card">
+                        <Image
+                            class="img_card"
+                            src={p.img}
+                            alt={`${p.title} ${p.model}`}
+                            widths={[320, 640]}
+                            sizes="(max-width: 768px) 280px, (max-width: 1024px) 50vw, 280px"
+                        />
+                        <div class="div_card">
+                            <p class="p_card_icon">{p.model}</p>
+                            <h3>{p.title}</h3>
+                            <p class="p_card">{p.material}</p>
+                            <p class="card_sum">от 00 000 ₽</p>
+                            <a class="btn_card" href="#contact" data-car={`${p.model} — ${p.title.toLowerCase()}`}>
+                                Подробнее <Image src={Arrow2Img} alt="" />
+                            </a>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+
+            <div class="gallery">
+                <h3>Комплекты и крепёж вживую</h3>
+                <ul class="gallery_grid">
+                    {gallery.map((g) => (
+                        <li>
+                            <a class="gallery_item" href={g.full} data-lightbox aria-label={`Открыть фото: ${g.alt}`}>
+                                <Image src={g.img} alt={g.alt} widths={[320, 640]} sizes="(max-width: 1024px) 50vw, 300px" />
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </section>
+
+        <section class="prime" id="prime">
+            <div class="prime_one">
+                <div class="title">
+                    <Image src={LineImg} alt="" />
+                    <p class="p_title">Преимущества</p>
+                </div>
+                <h2>Почему выбирают ГРАНФОРТ</h2>
+            </div>
+
+            <ul class="div_grid">
+                {advantages.map(([title, text], i) => (
+                    <li class="prime_icon">
+                        <div class="icon">
+                            <Image src={IconImg} alt="" />
+                            <p class="p_icon">{pad(i + 1)}</p>
+                        </div>
+                        <h3>{title}</h3>
+                        <p class="p_icon_text">{text}</p>
+                    </li>
+                ))}
+            </ul>
+        </section>
+
+        <section class="info" id="info">
+            <div class="info_one">
+                <div class="info_text">
+                    <div class="title">
+                        <Image src={LineImg} alt="" />
+                        <p class="p_title">Под заказ</p>
+                    </div>
+                    <h2>Нет комплекта для вашего авто? Сделаем</h2>
+                </div>
+                <p class="p_info">Разработаем и изготовим защиту под вашу модель — учтём пожелания по материалу и внешнему виду.</p>
+            </div>
+
+            <ol class="info_two">
+                {steps.map(([title, text], i) => (
+                    <li class="info_block">
+                        <div class="step_top" aria-hidden="true">
+                            <span class="step_num">{pad(i + 1)}</span>
+                            <span class="step_line"></span>
+                        </div>
+                        <h3>{title}</h3>
+                        <p class="p_block">{text}</p>
+                    </li>
+                ))}
+            </ol>
+        </section>
+
+        <section class="contact" id="contact">
+            <div class="contact_one">
+                <div class="contact_title">
+                    <div class="title">
+                        <Image src={LineImg} alt="" />
+                        <p class="p_title">Контакты</p>
+                    </div>
+                    <h2>Оставьте заявку</h2>
+                </div>
+                <p class="contact_text">Подберём комплект или рассчитаем защиту под ваш автомобиль.</p>
+                <ul class="contact_info">
+                    {contacts.map((c) => (
+                        <li class="contact_info_strong">
+                            <Image src={IconImg} alt="" />
+                            <div class="contact_info_text">
+                                <p class="p_signature">{c.label}</p>
+                                {c.href ? <a class="p_contact" href={c.href}>{c.value}</a> : <p class="p_contact">{c.value}</p>}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <form class="lead_form" action={LEAD_ENDPOINT} method="post" novalidate data-lead-form>
+                <div class="form_punct">
+                    <label for="name">Имя</label>
+                    <input type="text" id="name" name="name" placeholder="Как к вам обращаться" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="name-error" />
+                    <p class="field_error" id="name-error" aria-live="polite"></p>
+                </div>
+
+                <div class="form_punct">
+                    <label for="phone">Телефон</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" autocomplete="tel" inputmode="tel" required aria-describedby="phone-error" data-phone />
+                    <p class="field_error" id="phone-error" aria-live="polite"></p>
+                </div>
+
+                <div class="form_punct">
+                    <label for="car">Автомобиль</label>
+                    <input type="text" id="car" name="car" placeholder="Марка, модель и год выпуска" maxlength="120" />
+                </div>
+
+                <!-- Ловушка для спам-ботов: человек это поле не видит и не заполняет -->
+                <div class="visually-hidden" aria-hidden="true">
+                    <label for="website">Сайт</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+                </div>
+
+                <button class="btn btn_form" type="submit" data-submit>
+                    <span data-submit-label>Отправить</span> <Image src={ArrowImg} alt="" />
+                </button>
+
+                <p class="form_status" role="status" aria-live="polite" data-status></p>
+
+                <p class="p_policy">Нажимая кнопку, вы соглашаетесь с <a href="#">политикой обработки персональных данных</a></p>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer_nav">
+            <a class="logo" href="#hero" aria-label="ГРАНФОРТ — наверх"><Image src={LogoImg} alt="ГРАНФОРТ" /></a>
+            <nav aria-label="Меню в подвале">
+                {nav.map((item) => <a class="a_footer" href={item.href}>{item.label}</a>)}
+            </nav>
+            <div class="div_footer">
+                <a class="p_number" href={PHONE_HREF}>{PHONE}</a>
+                <a class="p_mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            </div>
+        </div>
+        <div class="footer_text">
+            <p class="p_footer_text">© 2026 ГРАНФОРТ. Все права защищены.</p>
+            <a class="p_footer_text" href="#">Политика конфиденциальности</a>
+        </div>
+    </footer>
+
+    <dialog class="lightbox" data-lightbox-dialog aria-label="Просмотр фото">
+        <img src="" alt="" data-lightbox-img />
+        <button class="lightbox_close" type="button" aria-label="Закрыть" data-lightbox-close>
+            <span></span><span></span>
+        </button>
+    </dialog>
+</Layout>
+
+<script>
+    // ---------- мобильное меню
+    const header = document.querySelector<HTMLElement>('[data-header]');
+    const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+
+    function setMenu(open: boolean) {
+        if (!header || !burger) return;
+        header.classList.toggle('is-open', open);
+        document.body.classList.toggle('menu-open', open);
+        burger.setAttribute('aria-expanded', String(open));
+        burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    }
+
+    burger?.addEventListener('click', () => setMenu(!header?.classList.contains('is-open')));
+    header?.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+    window.matchMedia('(min-width: 1025px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
+
+    // ---------- просмотр фото из галереи
+    const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+    const dialogImg = dialog?.querySelector<HTMLImageElement>('[data-lightbox-img]');
+
+    if (dialog && dialogImg && typeof dialog.showModal === 'function') {
+        document.querySelectorAll<HTMLAnchorElement>('[data-lightbox]').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                dialogImg.src = link.href;
+                dialogImg.alt = link.querySelector('img')?.alt || '';
+                dialog.showModal();
+            });
+        });
+        dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+        // клик по затемнённому фону закрывает просмотр
+        dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+        dialog.addEventListener('close', () => { dialogImg.removeAttribute('src'); });
+    }
+
+    // ---------- форма заявки
+    const form = document.querySelector<HTMLFormElement>('[data-lead-form]');
+
+    if (form) {
+        const phone = form.querySelector<HTMLInputElement>('[data-phone]')!;
+        const nameInput = form.querySelector<HTMLInputElement>('#name')!;
+        const carInput = form.querySelector<HTMLInputElement>('#car')!;
+        const status = form.querySelector<HTMLElement>('[data-status]')!;
+        const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+        const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+
+        // «Подробнее» в карточке товара подставляет модель в поле «Автомобиль»
+        document.querySelectorAll<HTMLAnchorElement>('[data-car]').forEach((link) => {
+            link.addEventListener('click', () => {
+                carInput.value = link.dataset.car || '';
+                setTimeout(() => nameInput.focus({ preventScroll: true }), 600);
+            });
+        });
+
+        // маска телефона: +7 (XXX) XXX-XX-XX
+        const digitsOf = (v: string) => {
+            let d = v.replace(/\D/g, '');
+            if (d.startsWith('8') || d.startsWith('7')) d = d.slice(1);
+            return d.slice(0, 10);
+        };
+        const formatPhone = (d: string) => {
+            if (!d) return '';
+            let out = '+7 (' + d.slice(0, 3);
+            if (d.length >= 3) out += ') ' + d.slice(3, 6);
+            if (d.length >= 6) out += '-' + d.slice(6, 8);
+            if (d.length >= 8) out += '-' + d.slice(8, 10);
+            return out;
+        };
+        phone.addEventListener('input', () => { phone.value = formatPhone(digitsOf(phone.value)); });
+        phone.addEventListener('focus', () => { if (!phone.value) phone.value = '+7 ('; });
+        phone.addEventListener('blur', () => { if (digitsOf(phone.value).length === 0) phone.value = ''; });
+
+        const setError = (input: HTMLInputElement, msg: string) => {
+            const el = document.getElementById(`${input.id}-error`);
+            if (el) el.textContent = msg;
+            input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        };
+        [nameInput, phone].forEach((i) => i.addEventListener('input', () => setError(i, '')));
+
+        const validate = () => {
+            let ok = true;
+            if (nameInput.value.trim().length < 2) { setError(nameInput, 'Укажите имя'); ok = false; }
+            if (digitsOf(phone.value).length !== 10) { setError(phone, 'Введите номер полностью'); ok = false; }
+            return ok;
+        };
+
+        const setStatus = (text: string, kind: '' | 'ok' | 'error') => {
+            status.textContent = text;
+            status.dataset.kind = kind;
+        };
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setStatus('', '');
+            if (!validate()) {
+                form.querySelector<HTMLInputElement>('[aria-invalid="true"]')?.focus();
+                return;
+            }
+
+            const data = new FormData(form);
+            const payload = {
+                name: nameInput.value.trim(),
+                phone: '+7' + digitsOf(phone.value),
+                car: carInput.value.trim(),
+                website: String(data.get('website') || ''), // ловушка для ботов: бэкенд отбрасывает заявку, если поле не пустое
+                page: location.href,
+            };
+
+            submit.disabled = true;
+            submitLabel.textContent = 'Отправляем…';
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!res.ok) throw new Error(String(res.status));
+                form.reset();
+                setStatus('Спасибо! Заявка отправлена — мы свяжемся с вами в ближайшее время.', 'ok');
+            } catch {
+                setStatus(`Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам по телефону.`, 'error');
+            } finally {
+                submit.disabled = false;
+                submitLabel.textContent = 'Отправить';
+            }
+        });
+    }
+</script>
+
+<style>
+/* ---------- общее */
+h1,
+h2,
+h3 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    color: var(--tx);
+}
+
+h1 {
+    font-size: clamp(30px, 4.2vw, 54px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+}
+
+h2 {
+    font-size: clamp(24px, 3vw, 38px);
+    line-height: 1.18;
+}
+
+h3 {
+    font-size: 18px;
+    line-height: 1.3;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+section {
+    padding: var(--section-py) var(--px);
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.p_title {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--acc);
+}
+
+/* ---------- кнопки */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 56px;
+    padding: 0 28px;
+    border-radius: 6px;
+    background-color: var(--acc);
+    color: var(--on-acc);
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+    background-color: var(--acc-hover);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn_s {
+    height: 44px;
+    padding: 0 20px;
+    font-size: 14px;
+}
+
+.btn_outline {
+    background-color: transparent;
+    color: var(--tx);
+    box-shadow: inset 0 0 0 1.5px var(--steel);
+}
+
+.btn_outline:hover {
+    background-color: rgba(242, 194, 48, 0.08);
+    box-shadow: inset 0 0 0 1.5px var(--acc);
+}
+
+.btn[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+/* ---------- шапка */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 0 var(--px);
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--line);
+}
+
+.logo img {
+    width: 187px;
+    height: auto;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.a_nav {
+    color: var(--tx);
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.a_nav:hover {
+    color: var(--acc);
+}
+
+.nav_mobile_extra {
+    display: none;
+}
+
+.div_header {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.p_header {
+    color: var(--tx);
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.burger {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    background-color: var(--surf2);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.burger span {
+    width: 18px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--tx);
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.header.is-open .burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.header.is-open .burger span:nth-child(2) { opacity: 0; }
+.header.is-open .burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---------- первый экран */
+.hero {
+    background-color: var(--bg);
+    background-image: url('../assets/images/light.png');
+    background-repeat: no-repeat;
+    background-position: right top;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    padding-top: 96px;
+    padding-bottom: 96px;
+}
+
+.hero_one {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 64px;
+}
+
+.hero_one_text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.hero_lead {
+    font-size: 19px;
+}
+
+.hero_button {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.img_hero {
+    flex: 0 1 560px;
+    min-width: 0;
+    border-radius: 12px;
+}
+
+.hero_two {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.hero_two_text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.hero_h2 {
+    font-family: var(--font-head);
+    font-size: clamp(18px, 2.2vw, 30px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--acc);
+}
+
+.hero_p {
+    font-size: 14px;
+}
+
+/* ---------- о компании */
+.compani {
+    background-color: var(--surf);
+    display: flex;
+    align-items: center;
+    gap: 80px;
+}
+
+.div_compani {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1 1 0;
+}
+
+.img_compani {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 12px;
+}
+
+.p_compani {
+    font-size: 16px;
+}
+
+/* ---------- продукция */
+.product {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.product_one,
+.prime_one,
+.contact_title,
+.info_text {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.product_two {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.product_card {
+    background-color: var(--surf2);
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.product_card:hover {
+    border-color: var(--acc);
+    transform: translateY(-2px);
+}
+
+.img_card {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.div_card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px;
+    gap: 12px;
+}
+
+.p_card_icon {
+    align-self: flex-start;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background-color: var(--bg);
+    color: var(--acc);
+    font-family: var(--font-head);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+}
+
+.p_card {
+    font-size: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    flex: 1;
+}
+
+.card_sum {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--tx);
+}
+
+.btn_card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 44px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1.5px var(--steel);
+    color: var(--tx);
+    font-size: 14px;
+    font-weight: 600;
+    transition: box-shadow 0.2s, color 0.2s;
+}
+
+.btn_card:hover {
+    box-shadow: inset 0 0 0 1.5px var(--acc);
+    color: var(--acc);
+}
+
+/* ---------- галерея */
+.gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.gallery_grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.gallery_item {
+    display: block;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+.gallery_item img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.gallery_item:hover img {
+    transform: scale(1.04);
+}
+
+.lightbox {
+    margin: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: calc(100vw - 2 * var(--gutter));
+    overflow: visible;
+}
+
+.lightbox::backdrop {
+    background-color: rgba(5, 10, 8, 0.88);
+}
+
+.lightbox img {
+    max-width: 100%;
+    max-height: calc(100vh - 140px);
+    width: auto;
+    border-radius: 10px;
+}
+
+.lightbox_close {
+    position: absolute;
+    top: -56px;
+    right: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    background-color: var(--surf2);
+    display: grid;
+    place-items: center;
+}
+
+.lightbox_close span {
+    grid-area: 1 / 1;
+    width: 18px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--tx);
+    transform: rotate(45deg);
+}
+
+.lightbox_close span + span {
+    transform: rotate(-45deg);
+}
+
+/* ---------- преимущества */
+.prime {
+    background-color: var(--surf);
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.div_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.prime_icon {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.icon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.p_icon {
+    font-family: var(--font-head);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+}
+
+.p_icon_text {
+    font-size: 16px;
+}
+
+/* ---------- под заказ */
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.info_one {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+}
+
+.info_text {
+    max-width: 720px;
+}
+
+.p_info {
+    font-size: 16px;
+    max-width: 384px;
+}
+
+.info_two {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.info_block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.step_top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.step_num {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid var(--acc);
+    display: grid;
+    place-items: center;
+    color: var(--acc);
+    font-family: var(--font-head);
+    font-size: 13px;
+}
+
+.step_line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--line);
+}
+
+.p_block {
+    font-size: 14px;
+}
+
+/* ---------- контакты и форма */
+.contact {
+    display: flex;
+    gap: 64px;
+    background-color: var(--surf);
+}
+
+.contact_one {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    flex: 1 1 0;
+}
+
+.contact_text {
+    font-size: 16px;
+}
+
+.contact_info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact_info_strong {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.p_signature {
+    font-size: 14px;
+    padding-bottom: 4px;
+}
+
+.p_contact {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--tx);
+}
+
+a.p_contact:hover {
+    color: var(--acc);
+}
+
+.lead_form {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 40px;
+    background-color: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.form_punct {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    color: var(--tx2);
+    font-size: 14px;
+}
+
+input {
+    height: 52px;
+    padding: 0 16px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background-color: var(--surf2);
+    color: var(--tx);
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+input::placeholder {
+    color: var(--tx2);
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--acc);
+}
+
+input[aria-invalid='true'] {
+    border-color: var(--error);
+}
+
+.field_error {
+    min-height: 0;
+    font-size: 13px;
+    color: var(--error);
+}
+
+.field_error:empty {
+    display: none;
+}
+
+.btn_form {
+    width: 100%;
+}
+
+.form_status {
+    font-size: 14px;
+}
+
+.form_status:empty {
+    display: none;
+}
+
+.form_status[data-kind='ok'] {
+    color: var(--acc);
+}
+
+.form_status[data-kind='error'] {
+    color: var(--error);
+}
+
+.p_policy {
+    font-size: 12px;
+}
+
+.p_policy a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* ---------- подвал */
+footer {
+    background-color: var(--surf);
+    padding: 48px var(--px) 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-top: 1px solid var(--line);
+}
+
+.footer_nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+}
+
+.footer_nav nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+}
+
+.a_footer {
+    font-size: 14px;
+    color: var(--tx);
+}
+
+.a_footer:hover,
+.p_mail:hover,
+.p_number:hover {
+    color: var(--acc);
+}
+
+.div_footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+.p_number {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--tx);
+}
+
+.p_mail {
+    font-size: 14px;
+}
+
+.footer_text {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid var(--line);
+    padding-top: 32px;
+}
+
+.p_footer_text {
+    font-size: 12px;
+}
+
+/* =========================================================
+   АДАПТИВ
+   ========================================================= */
+
+/* ноутбуки */
+@media (max-width: 1280px) {
+    .nav { gap: 24px; }
+    .a_nav { font-size: 14px; }
+    .div_header .p_header { display: none; }
+    .hero_one,
+    .compani,
+    .contact { gap: 48px; }
+}
+
+/* планшеты: меню в бургер, сетки в 2 колонки */
+@media (max-width: 1024px) {
+    .logo img { width: 150px; }
+    .div_header { display: none; }
+    .burger { display: flex; }
+
+    .nav {
+        position: fixed;
+        inset: var(--header-h) 0 0 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 8px var(--px) 32px;
+        background-color: var(--bg);
+        overflow-y: auto;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+    }
+
+    .header.is-open .nav {
+        visibility: visible;
+        opacity: 1;
+        transform: none;
+    }
+
+    .a_nav {
+        padding: 20px 0;
+        border-bottom: 1px solid var(--line);
+        font-family: var(--font-head);
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .nav_mobile_extra {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding-top: 24px;
+    }
+
+    .btn_wide { width: 100%; }
+
+    .hero { gap: 56px; padding-top: 56px; padding-bottom: 56px; background-size: 70% auto; }
+    .hero_one { flex-direction: column; align-items: stretch; }
+    .img_hero { flex: none; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+    .hero_two { grid-template-columns: repeat(2, 1fr); gap: 24px 16px; }
+
+    .compani { flex-direction: column; align-items: stretch; }
+    .img_compani { flex: none; width: 100%; }
+
+    .product_two { grid-template-columns: repeat(2, 1fr); }
+    .gallery_grid { grid-template-columns: repeat(2, 1fr); }
+    .div_grid { grid-template-columns: repeat(2, 1fr); }
+
+    .info_one { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .p_info { max-width: none; }
+    .info_two { grid-template-columns: repeat(2, 1fr); gap: 32px 24px; }
+
+    .contact { flex-direction: column; }
+
+    .footer_nav { flex-direction: column; align-items: flex-start; }
+    .div_footer { align-items: flex-start; }
+}
+
+/* телефоны */
+@media (max-width: 768px) {
+    .logo img { width: 132px; }
+
+    .product,
+    .prime,
+    .info { gap: 32px; }
+
+    .hero { gap: 40px; padding-top: 32px; padding-bottom: 48px; background-size: 120% auto; }
+    .hero_one { gap: 32px; }
+    .hero_one_text { gap: 20px; }
+    .hero_lead { font-size: 16px; }
+    .hero_button { flex-direction: column; align-self: stretch; }
+    .hero_button .btn { width: 100%; }
+
+    .compani,
+    .contact { gap: 32px; }
+
+    .product_two {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        margin: 0 calc(-1 * var(--px));
+        padding: 0 var(--px) 8px;
+        scrollbar-width: none;
+    }
+    .product_two::-webkit-scrollbar { display: none; }
+    .product_card { flex: 0 0 min(280px, 80%); scroll-snap-align: start; }
+    .product_card:hover { transform: none; }
+
+    .gallery { gap: 16px; }
+    .gallery_grid { gap: 8px; }
+    .gallery_item { border-radius: 6px; }
+
+    .div_grid { grid-template-columns: 1fr; gap: 12px; }
+    .prime_icon { padding: 24px; }
+
+    .info_two { grid-template-columns: 1fr; gap: 28px; }
+
+    .lead_form { padding: 24px; }
+
+    .footer_text { flex-direction: column; gap: 8px; }
+}
+
+@media (max-width: 340px) {
+    .hero_two { grid-template-columns: 1fr; }
+}
+</style>
